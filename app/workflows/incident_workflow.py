@@ -1,6 +1,6 @@
 from langgraph.graph import END, StateGraph
 
-from app.chains.incident_summarizer import summarize_incident
+from app.chains import incident_summarizer
 from app.workflows.state import WorkflowState
 
 
@@ -12,7 +12,7 @@ def _append_log(state: WorkflowState, message: str) -> list[str]:
 
 def summarize_incident_node(state: WorkflowState) -> WorkflowState:
     request_text = state["request_text"]
-    summary = summarize_incident(request_text)
+    summary = incident_summarizer.summarize_incident(request_text)
 
     return {
         "incident_summary": summary,
