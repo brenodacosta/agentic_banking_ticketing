@@ -1,0 +1,6 @@
+# Dev/CI dependencies (not installed in the production Docker image)
+ruff
+pytest
+mypy
+alembic
+sqlalchemy
