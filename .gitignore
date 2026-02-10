@@ -10,3 +10,9 @@ __pycache__/
 .vscode/
 
 /infra/terraform/.terraform/
+
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
