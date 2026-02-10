@@ -1,0 +1,59 @@
+variable "cluster_name" {
+  type        = string
+  description = "EKS cluster name"
+}
+
+variable "cluster_endpoint" {
+  type        = string
+  description = "EKS cluster endpoint"
+}
+
+variable "cluster_ca_data" {
+  type        = string
+  description = "EKS cluster CA data"
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "VPC ID"
+}
+
+variable "private_subnet_ids" {
+  type        = list(string)
+  description = "Private subnet IDs"
+}
+
+variable "node_instance_types" {
+  type        = list(string)
+  description = "Instance types for managed node group"
+}
+
+variable "desired_size" {
+  type        = number
+  description = "Desired node count"
+}
+
+variable "min_size" {
+  type        = number
+  description = "Minimum node count"
+}
+
+variable "max_size" {
+  type        = number
+  description = "Maximum node count"
+}
+
+variable "cluster_security_group_id" {
+  type        = string
+  description = "Cluster security group id"
+}
+
+variable "node_security_group_id" {
+  type        = string
+  description = "Node security group id"
+}
+
+variable "eks_managed_node_group_role_arn" {
+  type        = string
+  description = "IAM role ARN for EKS managed node groups"
+}
