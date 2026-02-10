@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai-app
+  namespace: genai-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genai-app
+  template:
+    metadata:
+      labels:
+        app: genai-app
+    spec:
+      serviceAccountName: genai-app
+      containers:
+        - name: genai-app
+          image: ghcr.io/brenodacosta/agentic_banking_ticketing:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: genai-platform-config
+          # Secret flow (Phase 4): DO NOT store the API key in manifests.
+          # Inject manually after deploy:
+          # kubectl -n genai-platform set env deployment/genai-app AI_AGENTIC_API_KEY=... 
+          env:
+            - name: AI_AGENTIC_API_KEY
+              value: ""
+          readinessProbe:
+            httpGet:
+              path: /docs
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /docs
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 20
