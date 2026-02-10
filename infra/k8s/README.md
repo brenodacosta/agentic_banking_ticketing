@@ -12,6 +12,34 @@ These manifests deploy:
 kubectl apply -k infra/k8s
 ```
 
+## Local clusters (minikube / kind)
+
+If you can't create EKS in a restricted AWS sandbox, you can still test these manifests locally.
+
+### Minikube (recommended)
+
+Minikube usually includes a default StorageClass (`standard`), so the Postgres PVC binds automatically.
+
+```bash
+minikube start
+kubectl apply -k infra/k8s/overlays/minikube
+```
+
+### kind
+
+kind does not include a default dynamic PV provisioner. If you apply the base manifests as-is,
+the Postgres PVC may stay `Pending`.
+
+Create a cluster:
+
+```bash
+kind create cluster --name genai-platform
+kubectl apply -k infra/k8s/overlays/kind
+```
+
+If Postgres PVC is `Pending`, install a provisioner (one common choice is `local-path-provisioner`)
+or switch to minikube.
+
 ## Inject AI key (no secrets stored)
 
 ```bash
@@ -32,6 +60,27 @@ Then call:
 curl -s http://localhost:8000/api/incident \
   -H 'Content-Type: application/json' \
   -d '{"description":"EKS test incident"}'
+```
+
+## Quick debugging
+
+Check pod status:
+
+```bash
+kubectl -n genai-platform get pods -o wide
+```
+
+If you see `ImagePullBackOff` (can happen if your environment can't reach GHCR):
+
+```bash
+kubectl -n genai-platform describe pod -l app=genai-app
+```
+
+If you see Postgres PVC stuck `Pending`:
+
+```bash
+kubectl -n genai-platform get pvc
+kubectl get storageclass
 ```
 
 ## Notes

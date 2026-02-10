@@ -133,6 +133,12 @@ aws eks update-kubeconfig \
   --name $(terraform output -raw cluster_name)
 ```
 
+Sandbox note (Whizlabs / training accounts):
+
+- Many training sandboxes explicitly deny EKS and IAM actions (for example `eks:CreateCluster`, `eks:ListClusters`, IAM policy attachment/tagging).
+- In those environments you can still use Terraform for `fmt/validate/plan`, but `apply` may be blocked by policy.
+- If your sandbox denies EKS actions, use the local Kubernetes path below to keep iterating on manifests and the app.
+
 ### Kubernetes manifests
 
 Kustomize manifests live in `infra/k8s` and deploy:
@@ -172,6 +178,39 @@ Notes:
 
 - Postgres is configured with `POSTGRES_HOST_AUTH_METHOD=trust` in Phase 4 to avoid storing a DB password.
 - NetworkPolicy is only enforced on EKS if you install a NetworkPolicy-capable CNI/policy engine (for example Calico).
+
+### Local Kubernetes (kind/minikube) fallback
+
+If your AWS sandbox blocks EKS, you can still test Phase 4 manifests locally.
+
+Prereqs: `kubectl` and either `minikube` (recommended) or `kind`.
+
+Using `minikube`:
+
+```bash
+minikube start
+kubectl apply -k infra/k8s/overlays/minikube
+kubectl -n genai-platform set env deployment/genai-app AI_AGENTIC_API_KEY="$AI_AGENTIC_API_KEY"
+kubectl -n genai-platform port-forward deployment/genai-app 8000:8000
+```
+
+Using `kind` (note: PVC provisioning may require extra setup):
+
+```bash
+kind create cluster --name genai-platform
+kubectl apply -k infra/k8s/overlays/kind
+kubectl -n genai-platform set env deployment/genai-app AI_AGENTIC_API_KEY="$AI_AGENTIC_API_KEY"
+kubectl -n genai-platform port-forward deployment/genai-app 8000:8000
+```
+
+Important: the default Deployment image is `ghcr.io/brenodacosta/agentic_banking_ticketing:latest` with `imagePullPolicy: Always` (it pulls from GHCR).
+
+Local overlays already exist:
+
+- `infra/k8s/overlays/minikube` pins the Postgres PVC to the typical minikube StorageClass (`standard`).
+- `infra/k8s/overlays/kind` is a placeholder entrypoint (kind often needs an extra PV provisioner for PVCs).
+
+If you hit `ImagePullBackOff`, it usually means the local environment can’t reach GHCR.
 
 ## Project layout
 
