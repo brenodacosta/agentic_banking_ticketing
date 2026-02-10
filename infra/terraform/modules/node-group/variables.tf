@@ -13,6 +13,11 @@ variable "cluster_ca_data" {
   description = "EKS cluster CA data"
 }
 
+variable "cluster_service_cidr" {
+  type        = string
+  description = "Kubernetes service CIDR for the EKS cluster (required by the node group user-data module)"
+}
+
 variable "vpc_id" {
   type        = string
   description = "VPC ID"

@@ -18,3 +18,8 @@ output "node_security_group_id" {
   value = module.eks.node_security_group_id
 }
 
+output "cluster_service_cidr" {
+  value       = module.eks.cluster_service_cidr
+  description = "Kubernetes service CIDR used by the EKS cluster"
+}
+

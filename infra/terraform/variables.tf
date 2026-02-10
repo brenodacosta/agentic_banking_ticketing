@@ -51,3 +51,9 @@ variable "max_size" {
   description = "Max size for node group"
   default     = 3
 }
+
+variable "sandbox_mode" {
+  type        = bool
+  description = "When true, disables AWS resources/actions commonly blocked in training sandboxes (NAT GW, KMS, log retention, default resource management, tags)."
+  default     = true
+}

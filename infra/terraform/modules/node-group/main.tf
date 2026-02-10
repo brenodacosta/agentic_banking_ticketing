@@ -4,9 +4,10 @@ module "managed_node_group" {
 
   name = "default"
 
-  cluster_name        = var.cluster_name
-  cluster_endpoint    = var.cluster_endpoint
-  cluster_auth_base64 = var.cluster_ca_data
+  cluster_name         = var.cluster_name
+  cluster_endpoint     = var.cluster_endpoint
+  cluster_auth_base64  = var.cluster_ca_data
+  cluster_service_cidr = var.cluster_service_cidr
 
   subnet_ids = var.private_subnet_ids
 
@@ -15,13 +16,9 @@ module "managed_node_group" {
   max_size       = var.max_size
   desired_size   = var.desired_size
 
-  # Keep it simple for practice; let EKS manage the launch template.
-  # Setting these to false allows using `disk_size` directly.
   create_launch_template     = false
   use_custom_launch_template = false
   disk_size                  = 20
 
-  tags = {
-    Project = var.cluster_name
-  }
+  # NOTE: No tags in Whizlabs sandbox to avoid iam:TagPolicy denial.
 }

@@ -11,12 +11,16 @@ module "eks" {
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
 
-  enable_irsa = true
+  enable_irsa = var.enable_irsa
+
+  create_kms_key            = var.create_kms_key
+  cluster_encryption_config = var.cluster_encryption_config
+
+  create_cloudwatch_log_group = var.create_cloudwatch_log_group
+  cluster_enabled_log_types   = var.cluster_enabled_log_types
 
   # We keep node groups separate in this phase.
   eks_managed_node_groups = {}
 
-  tags = {
-    Project = var.cluster_name
-  }
+  tags = var.tags
 }
