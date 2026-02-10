@@ -3,6 +3,11 @@ variable "project_name" {
   description = "Name prefix for resources"
 }
 
+variable "cluster_name" {
+  type        = string
+  description = "EKS cluster name (used for subnet tags)"
+}
+
 variable "vpc_cidr" {
   type        = string
   description = "VPC CIDR"

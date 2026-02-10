@@ -13,7 +13,7 @@ variable "project_name" {
 variable "cluster_name" {
   type        = string
   description = "EKS cluster name"
-  default     = "genai-platform"
+  default     = "genai-eks"
 }
 
 variable "vpc_cidr" {

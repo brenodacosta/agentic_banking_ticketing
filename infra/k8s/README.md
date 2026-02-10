@@ -9,8 +9,7 @@ These manifests deploy:
 ## Apply
 
 ```bash
-kubectl apply -f infra/k8s/base/namespace.yaml
-kubectl apply -f infra/k8s/base/
+kubectl apply -k infra/k8s
 ```
 
 ## Inject AI key (no secrets stored)

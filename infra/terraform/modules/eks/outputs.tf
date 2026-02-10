@@ -18,6 +18,3 @@ output "node_security_group_id" {
   value = module.eks.node_security_group_id
 }
 
-output "eks_managed_node_group_role_arn" {
-  value = module.eks.eks_managed_node_group_iam_role_arn
-}

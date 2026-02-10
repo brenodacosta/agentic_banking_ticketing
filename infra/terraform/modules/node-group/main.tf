@@ -1,29 +1,27 @@
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
+module "managed_node_group" {
+  source  = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
   version = "~> 20.0"
 
-  # Attach a managed node group to an existing cluster
-  cluster_name    = var.cluster_name
-  cluster_version = null
+  name = "default"
 
-  vpc_id     = var.vpc_id
+  cluster_name        = var.cluster_name
+  cluster_endpoint    = var.cluster_endpoint
+  cluster_auth_base64 = var.cluster_ca_data
+
   subnet_ids = var.private_subnet_ids
 
-  create_cluster = false
+  instance_types = var.node_instance_types
+  min_size       = var.min_size
+  max_size       = var.max_size
+  desired_size   = var.desired_size
 
-  eks_managed_node_groups = {
-    default = {
-      instance_types = var.node_instance_types
-      min_size       = var.min_size
-      max_size       = var.max_size
-      desired_size   = var.desired_size
+  # Keep it simple for practice; let EKS manage the launch template.
+  # Setting these to false allows using `disk_size` directly.
+  create_launch_template     = false
+  use_custom_launch_template = false
+  disk_size                  = 20
 
-      create_iam_role = false
-      iam_role_arn    = var.eks_managed_node_group_role_arn
-
-      # Use the security groups created by the cluster module
-      cluster_security_group_id = var.cluster_security_group_id
-      node_security_group_id    = var.node_security_group_id
-    }
+  tags = {
+    Project = var.cluster_name
   }
 }

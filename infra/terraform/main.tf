@@ -6,6 +6,7 @@ module "vpc" {
   source = "./modules/vpc"
 
   project_name = var.project_name
+  cluster_name = var.cluster_name
   vpc_cidr     = var.vpc_cidr
   azs          = slice(data.aws_availability_zones.available.names, 0, 3)
 }
@@ -34,9 +35,4 @@ module "node_group" {
   desired_size        = var.desired_size
   min_size            = var.min_size
   max_size            = var.max_size
-
-  # Allows worker nodes to join the cluster
-  cluster_security_group_id       = module.eks.cluster_security_group_id
-  node_security_group_id          = module.eks.node_security_group_id
-  eks_managed_node_group_role_arn = module.eks.eks_managed_node_group_role_arn
 }

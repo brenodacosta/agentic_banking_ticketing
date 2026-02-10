@@ -43,17 +43,3 @@ variable "max_size" {
   description = "Maximum node count"
 }
 
-variable "cluster_security_group_id" {
-  type        = string
-  description = "Cluster security group id"
-}
-
-variable "node_security_group_id" {
-  type        = string
-  description = "Node security group id"
-}
-
-variable "eks_managed_node_group_role_arn" {
-  type        = string
-  description = "IAM role ARN for EKS managed node groups"
-}
