@@ -20,6 +20,13 @@ spec:
           ports:
             - containerPort: 5432
               name: postgres
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           env:
             # Phase 4: no secrets stored. This config is NOT production-safe.
             # It allows password-less auth inside the cluster for iteration.
