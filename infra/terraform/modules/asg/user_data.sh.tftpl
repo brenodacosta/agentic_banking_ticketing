@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+# Basic packages
+if command -v dnf >/dev/null 2>&1; then
+  dnf -y update
+  dnf -y install docker ruby wget awscli
+else
+  yum -y update
+  yum -y install docker ruby wget awscli
+fi
+
+systemctl enable docker
+systemctl start docker
+
+# Allow ec2-user to run docker
+if id -u ec2-user >/dev/null 2>&1; then
+  usermod -aG docker ec2-user || true
+fi
+
+# Install CodeDeploy agent
+cd /tmp
+CODEDEPLOY_BUCKET="aws-codedeploy-${aws_region}"
+AGENT_URL="https://$CODEDEPLOY_BUCKET.s3.${aws_region}.amazonaws.com/latest/install"
+
+wget -q "$AGENT_URL" -O codedeploy_install
+chmod +x ./codedeploy_install
+./codedeploy_install auto
+
+systemctl enable codedeploy-agent
+systemctl start codedeploy-agent
+
+mkdir -p /etc/agentic-banking-ticketing
+cat > /etc/agentic-banking-ticketing/secrets.env <<EOF
+DB_PASSWORD_SECRET_ARN="${db_password_secret_arn}"
+AI_KEY_SECRET_ARN="${ai_key_secret_arn}"
+EOF
+
+echo "Bootstrap complete. CodeDeploy will deliver and run the app artifact."
